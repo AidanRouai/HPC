@@ -31,7 +31,6 @@ int main(int argc, char **argv) {
     int b = input_dims[0];
     int m = input_dims[1];
     int n = input_dims[2];
-    free(input_dims);
 
     float *input_array = read_array(input_file, input_dims, num_dims);
     if (input_array == NULL) {
@@ -57,7 +56,6 @@ int main(int argc, char **argv) {
     }
 
     int k = filter_dims[0];
-    free(filter_dims);
 
     float *filter_array = read_array(filter_file, filter_dims, filter_num_dims);
     if (filter_array == NULL) {
@@ -86,7 +84,7 @@ int main(int argc, char **argv) {
     double end_time = omp_get_wtime();
 
     //Print STENCIL TIME
-    printf("Stencil time: %f seconds\n", end_time - start_time);
+    printf("STENCIL TIME: %f", end_time - start_time);
 
     //Write output 
     write_to_output_file(output_file, output_array, input_dims, num_dims);
