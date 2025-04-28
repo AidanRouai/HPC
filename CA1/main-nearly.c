@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "file-reader.c"
-#include "stencil.c"
+#include "file-reader.h"
+#include "stencil.h"
 #include <omp.h>
 
 int main(int argc, char **argv) {
@@ -27,7 +27,10 @@ int main(int argc, char **argv) {
         printf("Error reading dimensions from input file\n");
         return 1;
     }
-    int b, m, n = input_dims[0], input_dims[1], input_dims[2];
+
+    int b = input_dims[0];
+    int m = input_dims[1];
+    int n = input_dims[2];
     free(input_dims);
 
     float *input_array = read_array(input_file, input_dims, num_dims);
