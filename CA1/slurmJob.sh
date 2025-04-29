@@ -17,4 +17,4 @@ module load openmpi
 export OMP_NUM_THREADS=8
 
 # Run the stencil program
-mpirun -np 1 ./stencil_program #input file, filter file, output file
+mpirun -np 1 ./stencil_program input_1_3840_2048.dat filter_5.dat output_8.dat
