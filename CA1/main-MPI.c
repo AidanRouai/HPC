@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    // Validate args
     if (argc != 4) {
         if (rank == 0) {
             fprintf(stderr, "Usage: %s <input_file> <filter_file> <output_file>\n", argv[0]);
@@ -29,6 +30,7 @@ int main(int argc, char **argv) {
     float *filter_array = NULL;
     float *output_array = NULL;
 
+    // Root process reads input and filter files
     if (rank == 0) {
         // Root process reads input and filter files
         int num_dims = read_num_dims(input_file);
@@ -119,6 +121,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Scatter the input array
     int *sendcounts = NULL;
     int *displs = NULL;
     if (rank == 0) {
@@ -148,7 +151,7 @@ int main(int argc, char **argv) {
     // Gather results back to root process
     MPI_Gatherv(local_output, local_b * m * n, MPI_FLOAT, output_array, sendcounts, displs, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
-    // Root process writes output to file
+    // Rank 0 writes output to file
     if (rank == 0) {
         write_to_output_file(output_file, output_array, (int[]){b, m, n}, 3);
         free(input_array);
