@@ -1,9 +1,14 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "file-reader.h"
-#include "stencil.h"
 #include <omp.h>
+
+// Declare the functions implemented in other .c files
+int read_num_dims(char *filename);
+int *read_dims(char *filename, int num_dims);
+float *read_array(char *filename, int *dims, int num_dims);
+void write_to_output_file(char *filename, float *output, int *dims, int num_dims);
+void stencil(float *input_vec, float *output_vec, float *filter_vec, int m, int n, int k, int b);
 
 int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
