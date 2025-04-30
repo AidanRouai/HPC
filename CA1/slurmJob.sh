@@ -14,7 +14,7 @@ module load gcc
 module load openmpi
 
 # Set the number of threads
-export OMP_NUM_THREADS=8
+export OMP_NUM_THREADS=1
 
-# Run the stencil program
-mpirun -np 1 ./stencil_program input_1_3840_2048.dat filter_5.dat output_8.dat
+# Run the stencil program (non-MPI version)
+./stencil-nearly-gcc input_1_3840_2048.dat filter_5.dat output_8.dat 
