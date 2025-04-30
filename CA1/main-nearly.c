@@ -10,6 +10,7 @@ float *read_array(char *filename, int *dims, int num_dims);
 void write_to_output_file(char *filename, float *output, int *dims, int num_dims);
 void stencil(float *input_vec, float *output_vec, float *filter_vec, int m, int n, int k, int b);
 
+
 int main(int argc, char **argv) {
     //Validate args
 
@@ -47,11 +48,6 @@ int main(int argc, char **argv) {
     //Read filter file
 
     int filter_num_dims = read_num_dims(filter_file);
-    if (filter_num_dims != 1) {
-        printf("Error reading number of dimensions from filter file\n");
-        free(input_array);
-        return -1;
-    }
 
     int *filter_dims = read_dims(filter_file, filter_num_dims);
     if (filter_dims == NULL) {

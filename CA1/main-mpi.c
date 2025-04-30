@@ -62,11 +62,6 @@ int main(int argc, char **argv) {
         }
 
         int filter_num_dims = read_num_dims(filter_file);
-        if (filter_num_dims != 1) {
-            fprintf(stderr, "Error: Filter file must have 1 dimension.\n");
-            free(input_array);
-            MPI_Abort(MPI_COMM_WORLD, 1);
-        }
 
         int *filter_dims = read_dims(filter_file, filter_num_dims);
         if (filter_dims == NULL) {
@@ -76,10 +71,9 @@ int main(int argc, char **argv) {
         }
 
         k = filter_dims[0];
-        free(filter_dims);
 
-        int filter_dims_2d[2] = {k, k};
-        filter_array = read_array(filter_file, filter_dims_2d , 2);
+        
+        filter_array = read_array(filter_file, filter_dims,num_dims);
 
         if (filter_array == NULL) {
             fprintf(stderr, "Error reading filter array from file.\n");
