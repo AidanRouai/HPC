@@ -3,9 +3,9 @@ void stencil(float *input_vec, float *output_vec, float *filter_vec, int m, int 
     float (*filter)[k] = (float (*)[k]) filter_vec;
     float (*output)[m][n] = (float (*)[m][n]) output_vec;
 
-    int blower = k / 2;
-    int bupper = (k - 1) - blower;
-
+    int blower = (k - 1) / 2;
+    int bupper = k / 2;
+    
     #pragma omp parallel for collapse(3)
     for (int batch = 0; batch < b; ++batch) {
         for (int i = 0; i < m; ++i) {
