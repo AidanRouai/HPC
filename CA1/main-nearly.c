@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
     double end_time = omp_get_wtime();
 
     //Print STENCIL TIME
-    printf("STENCIL TIME: %f", end_time - start_time);
+    printf("STENCIL_TIME: %f\n", end_time - start_time);
 
     //Write output 
     write_to_output_file(output_file, output_array, input_dims, num_dims);

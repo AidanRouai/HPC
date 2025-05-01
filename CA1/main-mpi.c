@@ -135,7 +135,8 @@ int main(int argc, char **argv) {
     MPI_Scatterv(input_array, sendcounts, displs, MPI_FLOAT, local_input, local_b * m * n, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
     // Start timing only the stencil execution
-    double start_time = 0, end_time = 0;
+    double start_time, end_time;
+    
     if (rank == 0) {
         start_time = omp_get_wtime();
     }
@@ -144,7 +145,7 @@ int main(int argc, char **argv) {
     
     if (rank == 0) {
         end_time = omp_get_wtime();
-        printf("STENCIL TIME: %f\n", end_time - start_time);
+        printf("STENCIL_TIME: %f\n", end_time - start_time);
     }
     
     // Gather results back to root process
