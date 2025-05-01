@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
         k = filter_dims[0];
 
         
-        filter_array = read_array(filter_file, filter_dims,num_dims);
+        filter_array = read_array(filter_file, filter_dims, filter_num_dims);  
 
         if (filter_array == NULL) {
             fprintf(stderr, "Error reading filter array from file.\n");
@@ -90,45 +90,41 @@ int main(int argc, char **argv) {
         }
     }
 
-    // Broadcast dimensions and filter to all processes
+    // Broadcast filter dimensions first
     MPI_Bcast(&b, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&k, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+    // Allocate and broadcast filter
     if (rank != 0) {
         filter_array = malloc(k * k * sizeof(float));
         if (filter_array == NULL) {
             fprintf(stderr, "Error allocating memory for filter array on process %d.\n", rank);
-            MPI_Finalize();
+            MPI_Abort(MPI_COMM_WORLD, 1);
             return 1;
         }
     }
-
     MPI_Bcast(filter_array, k * k, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
     // Scatter input data to all processes
+    // Calculate local batch size with overlap for stencil boundary
     int local_b = b / size + (rank < b % size ? 1 : 0);
-    int offset = rank * (b / size) + (rank < b % size ? rank : b % size);
     float *local_input = malloc(local_b * m * n * sizeof(float));
     float *local_output = malloc(local_b * m * n * sizeof(float));
 
-    if (local_input == NULL || local_output == NULL) {
-        fprintf(stderr, "Error allocating memory for local arrays on process %d.\n", rank);
-        free(filter_array);
-        MPI_Finalize();
-        return 1;
-    }
-
-    // Scatter the input array
+    // Calculate send counts and displacements
     int *sendcounts = NULL;
     int *displs = NULL;
     if (rank == 0) {
         sendcounts = malloc(size * sizeof(int));
         displs = malloc(size * sizeof(int));
+        int offset = 0;
         for (int i = 0; i < size; i++) {
-            sendcounts[i] = (b / size + (i < b % size ? 1 : 0)) * m * n;
-            displs[i] = i * (b / size) * m * n + (i < b % size ? i * m * n : b % size * m * n);
+            int proc_b = b / size + (i < b % size ? 1 : 0);
+            sendcounts[i] = proc_b * m * n;
+            displs[i] = offset * m * n;
+            offset += proc_b;
         }
     }
 
