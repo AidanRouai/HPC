@@ -1,13 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=stencil_test # Job name
-#SBATCH --output=stencil_test.out # Output file name
-#SBATCH --error=stencil_test.err # Error file name
-#SBATCH --nodes=1 # Number of nodes
-#SBATCH --ntasks=1 # Number of tasks (processes)
-#SBATCH --cpus-per-task=1 # Number of CPU cores per task
-#SBATCH --time=00:10:00 # Time limit (hh:mm:ss)
-#SBATCH --partition=compute # Partition name
+#SBATCH -D ./
+#SBATCH --export=ALL
+#SBATCH -p nodes 1
+#SBATCH -t 1
 
 # Load the required modules
 module load gcc
