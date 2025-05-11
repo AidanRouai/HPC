@@ -61,6 +61,5 @@ Use `CA1_setup.sh` to create symbolic links to the required large data files in 
 
 - Input and output files must be in the format expected by [`file-reader.c`](file-reader.c).
 - The stencil kernel is implemented in [`stencil.c`](stencil.c).
-- For questions or issues with file I/O, contact h.j.forbes@liverpool.ac.uk.
 
 ---
