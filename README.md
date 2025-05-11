@@ -18,7 +18,7 @@ This project implements a stencil computation for 3D data arrays, with both Open
 To build all versions (GCC/ICC, OpenMP/MPI), run:
 
 ```sh
-make
+sbatch slurmJob.sh
 ```
 
 This produces the following executables:
