@@ -1,4 +1,4 @@
-# Stencil Computation - COMP328 CA1
+# Parallel Matrix Convolution Engine
 
 This project implements a stencil computation for 3D data arrays, with both OpenMP and MPI parallelization options. It is designed for the 2024-2025 COMP328 coursework assignment.
 
