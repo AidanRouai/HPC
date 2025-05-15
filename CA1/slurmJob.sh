@@ -1,16 +1,41 @@
-#!/bin/bash
-
+#!/bin/bash -l
 #SBATCH -D ./
 #SBATCH --export=ALL
-#SBATCH -p nodes 1
+#SBATCH -p nodes 
 #SBATCH -t 1
+#SBATCH --output=stencil_job_%j.out
+#SBATCH --error=stencil_job_%j.err
 
 # Load the required modules
-module load gcc
-module load openmpi
+module purge
+module load compilers/intel/2019u5 
+module load mpi/openmpi/4.0.1_gcc-5.5.0 
 
-# Set the number of threads
-export OMP_NUM_THREADS=1
+# Get job information
+procs=${SLURM_NTASKS:-1}
+cores=${SLURM_CPUS_PER_TASK:-1}
 
-# Run the stencil program (non-MPI version)
-./stencil-nearly-gcc input_1_3840_2048.dat filter_5.dat output_8.dat 
+# Set the number of OpenMP threads
+export OMP_NUM_THREADS=$cores
+
+echo "Running with $procs MPI processes and $cores OpenMP threads per process"
+
+# Compile the code 
+make all
+
+echo 
+echo "=====RUNNING PROGRAMS====="
+
+# Run the OpenMP-only versions first
+echo "Running OpenMP version with $cores threads with GNU"
+./stencil-nearly-gcc linked_datafiles/input_1_3840_2048.dat linked_datafiles/filter_5.dat linked_datafiles/output_omp_3840_2048x5.dat
+echo
+
+# Then run the MPI+OpenMP versions
+echo "Running MPI version with $procs processes and $cores threads per process with GNU"
+mpirun -np $procs ./stencil-complete-icc linked_datafiles/input_1_3840_2048.dat linked_datafiles/filter_5.dat linked_datafiles/output_mpi_3840_2048x5.dat
+echo
+
+
+# Clean up
+make clean
