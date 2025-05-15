@@ -1,17 +1,34 @@
+#Targets
+omp_target = main-nearly.c stencil.c
+mpi_target = main-mpi.c stencil.c
+file_reader_target = file-reader.c
+
+#Executables
+omp_out = stencil-nearly
+mpi_out = stencil-complete
+
+#Flags
+op = -O3
+
 all: 
 	make gccnearly
 	make gcccomplete
 	make iccnearly
 	make icccomplete
 
-gccnearly:
-    gcc -std=c99 -fopenmp main-nearly.c stencil.c file-reader.c -o stencil-nearly-gcc
+gccnearly: $(omp_target) $(file_reader_target)
+	gcc -fopenmp -std=c99 $(op) $(omp_target) $(file_reader_target) -o $(omp_out)-gcc -lm
 
-gcccomplete:
-    mpicc -std=c99 -fopenmp main-mpi.c stencil.c file-reader.c -o stencil-complete-gcc
+gcccomplete: $(mpi_target) $(file_reader_target)
+	mpicc -fopenmp -std=c99 $(op) $(mpi_target) $(file_reader_target) -o $(mpi_out)-gcc -lm
 
-iccnearly:
-    icc -std=c99 -qopenmp main-nearly.c stencil.c file-reader.c -o stencil-nearly-icc
+iccnearly: $(omp_target) $(file_reader_target)
+	icc -qopenmp -std=c99 $(op) $(omp_target) $(file_reader_target) -o $(omp_out)-icc
 
-icccomplete:
-    mpiicc -std=c99 -qopenmp main-mpi.c stencil.c file-reader.c -o stencil-complete-icc
+icccomplete: $(mpi_target) $(file_reader_target)
+	mpiicc -qopenmp -std=c99 $(op) $(mpi_target) $(file_reader_target) -o $(mpi_out)-icc
+
+clean:
+	rm -f $(omp_out)-gcc $(mpi_out)-gcc $(omp_out)-icc $(mpi_out)-icc $(mpi_out)-db
+
+.PHONY: all gccnearly gcccomplete iccnearly icccomplete clean
