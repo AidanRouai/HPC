@@ -9,8 +9,7 @@
 # Load the required modules
 module purge
 module load compilers/intel/2019u5 
-module load mpi/openmpi/4.0.1_gcc-5.5.0 
-
+module load mpi/intel-mpi/2019u5/bin
 # Get job information
 procs=${SLURM_NTASKS:-1}
 cores=${SLURM_CPUS_PER_TASK:-1}
